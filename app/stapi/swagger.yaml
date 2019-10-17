@@ -1,0 +1,754 @@
+swagger: '2.0'
+info:
+  title: STAPI
+  version: '1.0.0'
+host: stapi.co
+schemes:
+  - http
+basePath: /api/v1/rest
+produces:
+  - application/json
+paths:
+  /character:
+    get:
+      description: Retrival of a single character
+      parameters:
+        - name: uid
+          in: query
+          type: string
+          required: true
+          description: Character unique ID
+        - name: apiKey
+          in: query
+          type: string
+          description: API key
+      responses:
+        200:
+          description: Detailed description of a character
+          schema:
+            $ref: '#/definitions/CharacterFullResponse'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+      tags:
+        - Character
+  /character/search:
+    post:
+      description: Searching characters
+      consumes:
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: pageNumber
+          in: query
+          type: integer
+          format: int32
+          description: Zero-based page number
+        - name: pageSize
+          in: query
+          type: integer
+          format: int32
+          description: Page size
+        - name: sort
+          type: string
+          in: query
+          description: "Sorting, serialized like this: fieldName,ASC;anotherFieldName,DESC"
+        - name: apiKey
+          in: query
+          type: string
+          description: API key
+        - name: name
+          in: formData
+          type: string
+          description: Character name
+        - name: gender
+          in: formData
+          type: string
+          description: Character gender
+        - name: deceased
+          in: formData
+          type: boolean
+          description: Whether it should be a deceased character
+        - name: hologram
+          in: formData
+          type: boolean
+          description: Whether it should be a hologram
+        - name: fictionalCharacter
+          in: formData
+          type: boolean
+          description: Whether it should be a fictional character (from universe point of view)
+        - name: mirror
+          in: formData
+          type: boolean
+          description: Whether it should be a mirror universe character
+        - name: alternateReality
+          in: formData
+          type: boolean
+          description: Whether it should be a alternate reality character
+      responses:
+        200:
+          description: "List of characters"
+          schema:
+            $ref: '#/definitions/CharacterBaseResponse'
+      tags:
+        - Character
+
+definitions:
+  CharacterBase:
+    type: object
+    description: Base character, returned in search results
+    properties:
+      uid:
+        type: string
+        description: Character unique ID
+      name:
+        type: string
+        description: Character name
+      gender:
+        $ref: '#/definitions/Gender'
+        description: Character gender
+      yearOfBirth:
+        type: integer
+        description: Year the character was born
+      monthOfBirth:
+        type: integer
+        description: Month the character was born
+      dayOfBirth:
+        type: integer
+        description: Day the character was born
+      placeOfBirth:
+        type: string
+        description: Place of birth
+      yearOfDeath:
+        type: integer
+        description: Year the character died
+      monthOfDeath:
+        type: integer
+        description: Month the character died
+      dayOfDeath:
+        type: integer
+        description: Day the character died
+      placeOfDeath:
+        type: string
+        description: Place of death
+      height:
+        type: integer
+        description: Height in centimeters
+      weight:
+        type: integer
+        description: Weight in kilograms
+      deceased:
+        type: boolean
+        description: Whether this character is deceased
+      bloodType:
+        $ref: '#/definitions/BloodType'
+        description: Blood type
+      maritalStatus:
+        $ref: '#/definitions/MaritalStatus'
+        description: Marital status
+      serialNumber:
+        type: string
+        description: Serial number
+      hologramActivationDate:
+        type: string
+        description: Hologram activation date
+      hologramStatus:
+        type: string
+        description: Hologram status
+      hologramDateStatus:
+        type: string
+        description: Hologram date status
+      hologram:
+        type: boolean
+        description: Whether this character is a hologram
+      fictionalCharacter:
+        type: boolean
+        description: Whether this character is a fictional character (from universe point of view)
+      mirror:
+        type: boolean
+        description: Whether this character is from mirror universe
+      alternateReality:
+        type: boolean
+        description: Whether this character is from alternate reality
+  CharacterFull:
+    type: object
+    description: Full character, returned when queried using UID
+    properties:
+      uid:
+        type: string
+        description: Character unique ID
+      name:
+        type: string
+        description: Character name
+      gender:
+        $ref: '#/definitions/Gender'
+        description: Character gender
+      yearOfBirth:
+        type: integer
+        description: Year the character was born
+      monthOfBirth:
+        type: integer
+        description: Month the character was born
+      dayOfBirth:
+        type: integer
+        description: Day the character was born
+      placeOfBirth:
+        type: string
+        description: Place of birth
+      yearOfDeath:
+        type: integer
+        description: Year the character died
+      monthOfDeath:
+        type: integer
+        description: Month the character died
+      dayOfDeath:
+        type: integer
+        description: Day the character died
+      placeOfDeath:
+        type: string
+        description: Place of death
+      height:
+        type: integer
+        description: Height in centimeters
+      weight:
+        type: integer
+        description: Weight in kilograms
+      deceased:
+        type: boolean
+        description: Whether this character is deceased
+      bloodType:
+        $ref: '#/definitions/BloodType'
+        description: Blood type
+      maritalStatus:
+        $ref: '#/definitions/MaritalStatus'
+        description: Marital status
+      serialNumber:
+        type: string
+        description: Serial number
+      hologramActivationDate:
+        type: string
+        description: Hologram activation date
+      hologramStatus:
+        type: string
+        description: Hologram status
+      hologramDateStatus:
+        type: string
+        description: Hologram date status
+      hologram:
+        type: boolean
+        description: Whether this character is a hologram
+      fictionalCharacter:
+        type: boolean
+        description: Whether this character is a fictional character (from universe point of view)
+      mirror:
+        type: boolean
+        description: Whether this character is from mirror universe
+      alternateReality:
+        type: boolean
+        description: Whether this character is from alternate reality
+      performers:
+        type: array
+        items:
+          $ref: '#/definitions/PerformerBase'
+        description: Performers who played this character
+      episodes:
+        type: array
+        items:
+          $ref: '#/definitions/EpisodeBase'
+        description: Episodes in which this character appeared
+      movies:
+        type: array
+        items:
+          $ref: '#/definitions/MovieBase'
+        description: Movies in which this character appeared
+      characterSpecies:
+        type: array
+        items:
+          $ref: '#/definitions/CharacterSpecies'
+        description: Species this character belongs to
+      characterRelations:
+        type: array
+        items:
+          $ref: '#/definitions/CharacterRelation'
+        description: Relations with other characters
+      titles:
+        type: array
+        items:
+          $ref: '#/definitions/TitleBase'
+        description: Titles this character holds
+      occupations:
+        type: array
+        items:
+          $ref: '#/definitions/OccupationBase'
+        description: Occupations of this character
+      organizations:
+        type: array
+        items:
+          $ref: '#/definitions/OrganizationBase'
+        description: Organizations this character has affiliation with
+  PerformerBase:
+    type: object
+    description: Base performer, returned in search results
+    properties:
+      uid:
+        type: string
+        description: Performer unique ID
+      name:
+        type: string
+        description: Performer name
+      birthName:
+        type: string
+        description: Performer birth name
+      gender:
+        $ref: '#/definitions/Gender'
+        description: Performer gender
+      dateOfBirth:
+        type: string
+        format: date
+        description: Date the performer was born
+      placeOfBirth:
+        type: string
+        description: Place the performer was born
+      dateOfDeath:
+        type: string
+        format: date
+        description: Date the performer died
+      placeOfDeath:
+        type: string
+        description: Place the performer died
+      animalPerformer:
+        type: boolean
+        description: Whether it's an animal performer
+      disPerformer:
+        type: boolean
+        description: "Whether it's a performer that appeared in Star Trek: Discovery"
+      ds9Performer:
+        type: boolean
+        description: "Whether it's a performer that appeared in Star Trek: Deep Space Nine"
+      entPerformer:
+        type: boolean
+        description: "Whether it's a performer that appeared in Star Trek: Enterprise"
+      filmPerformer:
+        type: boolean
+        description: Whether it's a performer that appeared in a Star Trek movie
+      standInPerformer:
+        type: boolean
+        description: Whether it's a stand-in performer
+      stuntPerformer:
+        type: boolean
+        description: Whether it's a stunt performer
+      tasPerformer:
+        type: boolean
+        description: "Whether it's a performer that appeared in Star Trek: The Animated Series"
+      tngPerformer:
+        type: boolean
+        description: "Whether it's a performer that appeared in Star Trek: The Next Generation"
+      tosPerformer:
+        type: boolean
+        description: "Whether it's a performer that appeared in Star Trek: The Original Series"
+      videoGamePerformer:
+        type: boolean
+        description: Whether it's a video game performer
+      voicePerformer:
+        type: boolean
+        description: Whether it's a voice performer
+      voyPerformer:
+        type: boolean
+        description: "Whether it's a performer that appeared in Star Trek: Voyager"
+  EpisodeBase:
+    type: object
+    description: Base episode, returned in search results
+    properties:
+      uid:
+        type: string
+        description: Episode unique ID
+      title:
+        type: string
+        description: Episode title
+      titleGerman:
+        type: string
+        description: Episode title in German
+      titleItalian:
+        type: string
+        description: Episode title in Italian
+      titleJapanese:
+        type: string
+        description: Episode title in Japanese
+      series:
+        $ref: '#/definitions/seriesHeader'
+        description: Series this episode belongs to
+      season:
+        $ref: '#/definitions/seasonHeader'
+        description: Season this episode belongs to
+      seasonNumber:
+        type: integer
+        description: Season number
+      episodeNumber:
+        type: integer
+        description: Episode number in season
+      productionSerialNumber:
+        type: string
+        description: Production serial number
+      featureLength:
+        type: boolean
+        description: Whether it's a feature length episode
+      stardateFrom:
+        type: number
+        format: float
+        description: Starting stardate of episode story
+      stardateTo:
+        type: number
+        format: float
+        description: Ending stardate of episode story
+      yearFrom:
+        type: integer
+        description: Starting year of episode story
+      yearTo:
+        type: integer
+        description: Ending year of episode story
+      usAirDate:
+        type: string
+        format: date
+        description: Date the episode was first aired in the United States
+      finalScriptDate:
+        type: string
+        format: date
+        description: Date the episode script was completed
+  seriesHeader:
+    type: object
+    description: Header series, embedded in other objects
+    properties:
+      uid:
+        type: string
+        description: Series unique ID
+      title:
+        type: string
+        description: Series title
+  seasonHeader:
+    type: object
+    description: Header season, embedded in other objects
+    properties:
+      uid:
+        type: string
+        description: Season unique ID
+      title:
+        type: string
+        description: Season title
+  MovieBase:
+    type: object
+    description: Base movie, returned in search results
+    properties:
+      uid:
+        type: string
+        description: Movie unique ID
+      title:
+        type: string
+        description: Movie title
+      mainDirector:
+        $ref: '#/definitions/StaffHeader'
+        description: Director of the movie
+      titleBulgarian:
+        type: string
+        description: Movie title in Bulgarian
+      titleCatalan:
+        type: string
+        description: Movie title in Catalan
+      titleChineseTraditional:
+        type: string
+        description: Movie title in Chinese traditional
+      titleGerman:
+        type: string
+        description: Movie title in German
+      titleItalian:
+        type: string
+        description: Movie title in Italian
+      titleJapanese:
+        type: string
+        description: Movie title in Japanese
+      titlePolish:
+        type: string
+        description: Movie title in Polish
+      titleRussian:
+        type: string
+        description: Movie title in Russian
+      titleSerbian:
+        type: string
+        description: Movie title in Serbian
+      titleSpanish:
+        type: string
+        description: Movie title in Spanish
+      stardateFrom:
+        type: number
+        format: float
+        description: Starting stardate of movie story
+      stardateTo:
+        type: number
+        format: float
+        description: Ending stardate of movie story
+      yearFrom:
+        type: integer
+        description: Starting year of movie story
+      yearTo:
+        type: integer
+        description: Ending year of movie story
+      usReleaseDate:
+        type: string
+        format: date
+        description: Date the movie was first released in the United States
+  StaffHeader:
+    type: object
+    description: Header staff, embedded in other objects
+    properties:
+      uid:
+        type: string
+        description: Staff unique ID
+      name:
+        type: string
+        description: Staff name
+  OccupationBase:
+    type: object
+    description: Base occupations, returned in search results
+    properties:
+      uid:
+        type: string
+        description: Occupation unique ID
+      name:
+        type: string
+        description: Occupation name
+      legalOccupation:
+        type: boolean
+        description: Whether it's a legal occupation
+      medicalOccupation:
+        type: boolean
+        description: Whether it's a medical occupation
+      scientificOccupation:
+        type: boolean
+        description: Whether it's a scientific occupation
+
+  OrganizationBase:
+    type: object
+    description: Base organization, returned in search results
+    properties:
+      uid:
+        type: string
+        description: Organization unique ID
+      name:
+        type: string
+        description: Organization name
+      government:
+        type: boolean
+        description: Whether it's a government
+      intergovernmentalOrganization:
+        type: boolean
+        description: Whether it's an intergovernmental organization
+      researchOrganization:
+        type: boolean
+        description: Whether it's a research organization
+      sportOrganization:
+        type: boolean
+        description: Whether it's a sport organization
+      medicalOrganization:
+        type: boolean
+        description: Whether it's a medical organization
+      militaryOrganization:
+        type: boolean
+        description: Whether it's a military organization
+      militaryUnit:
+        type: boolean
+        description: Whether it's a military unit
+      governmentAgency:
+        type: boolean
+        description: Whether it's a government agency
+      lawEnforcementAgency:
+        type: boolean
+        description: Whether it's a law enforcement agency
+      prisonOrPenalColony:
+        type: boolean
+        description: Whether it's a prison or penal colony
+      mirror:
+        type: boolean
+        description: Whether this organization is from mirror universe
+      alternateReality:
+        type: boolean
+        description: Whether this location is from alternate reality
+  CharacterBaseResponse:
+    type: object
+    description: Response object for characters search
+    properties:
+      page:
+        $ref: '#/definitions/ResponsePage'
+        description: Response page
+      sort:
+        $ref: '#/definitions/ResponseSort'
+        description: Response sort
+      characters:
+        type: array
+        items:
+          $ref: '#/definitions/CharacterBase'
+        description: List of characters matching given criteria
+  CharacterFullResponse:
+    type: object
+    description: Response object for single character query
+    properties:
+      character:
+        $ref: '#/definitions/CharacterFull'
+        description: Character, if found
+  CharacterRelation:
+    type: object
+    description: Relation between characters
+    properties:
+      type:
+        type: string
+        description: Relation type
+      source:
+        $ref: '#/definitions/CharacterHeader'
+        description: Character from which this relation is directed
+      target:
+        $ref: '#/definitions/CharacterHeader'
+        description: Character to which this relation is directed
+  CharacterHeader:
+    type: object
+    description: Header character, embedded in other objects
+    properties:
+      uid:
+        type: string
+        description: Character unique ID
+      name:
+        type: string
+        description: Character name
+  CharacterSpecies:
+    type: object
+    description: Species a character belongs to
+    properties:
+      uid:
+        type: string
+        description: Entity unique ID
+      name:
+        type: string
+        description: Species name
+      numerator:
+        type: integer
+        description: Numerator
+      denominator:
+        type: integer
+        description: Denominator
+  MaritalStatus:
+    type: string
+    description: Marital status
+    enum:
+      - SINGLE
+      - ENGAGED
+      - MARRIED
+      - DIVORCED
+      - REMARRIED
+      - SEPARATED
+      - WIDOWED
+      - CAPTAINS_WOMAN
+  Gender:
+    type: string
+    description: Gender
+    enum:
+      - F
+      - M
+  BloodType:
+    type: string
+    description: Blood type
+    enum:
+      - B_NEGATIVE
+      - O_NEGATIVE
+      - T_NEGATIVE
+  Error:
+    type: object
+    description: Error object
+    properties:
+      code:
+        type: string
+        description: Error code
+      message:
+        type: string
+        description: Error message
+  TitleBase:
+    type: object
+    description: Base title, returned in search results
+    properties:
+      uid:
+        type: string
+        description: Title unique ID
+      name:
+        type: string
+        description: Title name
+      militaryRank:
+        type: boolean
+        description: Whether it's a military rank
+      fleetRank:
+        type: boolean
+        description: Whether it's a fleet rank
+      religiousTitle:
+        type: boolean
+        description: Whether it's a religious title
+      position:
+        type: boolean
+        description: Whether it's a position
+      mirror:
+        type: boolean
+        description: Whether this title is from mirror universe
+  ResponsePage:
+    type: object
+    description: Object describing response page
+    properties:
+      pageNumber:
+        type: integer
+        format: int32
+        description: Zero-based page number
+      pageSize:
+        type: integer
+        format: int32
+        description: Page size
+      numberOfElements:
+        type: integer
+        format: int32
+        description: Number of elements in page
+      totalElements:
+        type: integer
+        format: int32
+        description: Total elements found
+      totalPages:
+        type: integer
+        format: int32
+        description: Total pages found
+      firstPage:
+        type: boolean
+        description: Whether it is the first page
+      lastPage:
+        type: boolean
+        description: Whether it is the last page
+  ResponseSort:
+    type: object
+    description: Response sort
+    properties:
+      clauses:
+        type: array
+        items:
+          $ref: '#/definitions/ResponseSortClause'
+        description: List of response sort rules
+  ResponseSortClause:
+    type: object
+    description: Single response sort clause
+    properties:
+      name:
+        type: string
+        description: Field name results are sorted by
+      direction:
+        $ref: '#/definitions/ResponseSortDirection'
+        description: Sort direction
+      clauseOrder:
+        type: integer
+        description: Order in which this clause was applied
+  ResponseSortDirection:
+    type: string
+    description: Sort direction
+    enum:
+      - ASC
+      - DESC
