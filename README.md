@@ -15,9 +15,9 @@ $ go build -mod=vendor -o ./bin/translator ./cmd/translator/...
 
 Note, that sometimes one or more results will be shown, as [Star Track API](http://stapi.co​.)
 might return several names that contains the input letters.
-Output of the program will contain full name, followed by translation and species name separated by new line. 
+Output of the program will contain translation to Klingon, followed by full name and species name separated by new line. 
 
-Example output:
+Example:
 ```
 $ ./bin/translator Uhura
 0xF8DB 0xF8E8 0xF8DD 0xF8E3 0xF8D0 0x0020 0xF8E5 0xF8D6 0xF8E5 0xF8E1 0xF8D0

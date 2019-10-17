@@ -41,7 +41,8 @@ func (st *StartTrack) Validate(englishName string) error {
 func (st *StartTrack) Translate(englishName string) string {
 	var piqadName []string
 	for i := 0; i < len(englishName); i++ {
-		piqadName = append(piqadName, strings.ReplaceAll(fmt.Sprintf("%U", englishToPiqadMap[strings.ToLower(string(englishName[i]))].unicode), "U+", "0x"))
+		piqadName = append(piqadName, strings.ReplaceAll(fmt.Sprintf("%U",
+			englishToPiqadMap[strings.ToLower(string(englishName[i]))].unicode), "U+", "0x"))
 	}
 	return strings.Join(piqadName, " ")
 }
